@@ -37,7 +37,6 @@ class Follows(Base):
     followerId = Column(Integer, ForeignKey('users.id'), nullable=False)
     followeeId = Column(Integer, ForeignKey('users.id'), nullable=False)
     createdAt = Column(DateTime, default=datetime.now(), nullable=False)
-    updatedAt = Column(DateTime, default=None, onupdate=datetime.now())
 
     __table_args__ = (
         PrimaryKeyConstraint('followerId', 'followeeId'),
