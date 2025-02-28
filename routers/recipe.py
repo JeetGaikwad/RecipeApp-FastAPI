@@ -5,7 +5,7 @@ from typing import Annotated, Optional
 from pydantic import BaseModel
 from starlette import status
 from enum import Enum
-from models import Recipe
+from models import Recipe, RecipeLikes
 from .auth import get_current_user
 
 router = APIRouter(
@@ -92,6 +92,14 @@ async def search_recipes(db: db_dependency, query: str):
     return {'recipes': recipes}
 
 
+@router.get('/by-likes/', status_code=status.HTTP_200_OK)
+async def get_recipes_by_like(db: db_dependency):
+    
+    recipes = db.query(Recipe).order_by(Recipe.likesCount.desc()).all()
+
+    return {'recipes': recipes}
+
+
 @router.post('/recipe/', status_code=status.HTTP_201_CREATED)
 async def create_recipe(db: db_dependency, user: user_dependency, create_recipe: RecipeRequest):
     if user is None:
@@ -107,6 +115,52 @@ async def create_recipe(db: db_dependency, user: user_dependency, create_recipe:
     )
 
     db.add(recipe_model)
+    db.commit()
+
+
+@router.post('/{recipe_id}/like', status_code=status.HTTP_204_NO_CONTENT)
+def like_recipe(recipe_id: int, user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorize User")
+
+    existing_like = db.query(RecipeLikes).filter((RecipeLikes.userId == user.get(
+        'id')) & (RecipeLikes.recipeId == recipe_id)).first()
+
+    if existing_like:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Already Liked")
+
+    new_like = RecipeLikes(userId=user.get('id'), recipeId=recipe_id)
+
+    db.add(new_like)
+
+    recipe = db.query(Recipe).filter(Recipe.id == recipe_id).first()
+    if recipe:
+        recipe.likesCount += 1
+
+    db.commit()
+
+
+@router.post('/{recipe_id}/unlike', status_code=status.HTTP_204_NO_CONTENT)
+def unlike_recipe(recipe_id: int, user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorize User")
+
+    like = db.query(RecipeLikes).filter((RecipeLikes.userId == user.get(
+        'id')) & (RecipeLikes.recipeId == recipe_id)).first()
+
+    if not like:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="You have not liked the recipe")
+
+    db.delete(like)
+
+    recipe = db.query(Recipe).filter(Recipe.id == recipe_id).first()
+    if recipe:
+        recipe.likesCount -= 1
+
     db.commit()
 
 
