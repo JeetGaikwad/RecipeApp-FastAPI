@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from models import Base
 from database import engine
-from routers import auth, user
+from routers import auth, user, recipe
 
 app = FastAPI()
 
@@ -13,3 +13,4 @@ def test():
 
 app.include_router(router=auth.router) 
 app.include_router(router=user.router) 
+app.include_router(router=recipe.router) 
