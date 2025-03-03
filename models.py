@@ -58,6 +58,7 @@ class Recipe(Base):
     recipeType = Column(Enum(tag), nullable=False)
     peopleCount = Column(Integer, default=1)
     likesCount = Column(Integer, default=0)
+    forkedCount = Column(Integer, default=0)
     isDeleted = Column(Boolean, default=False)
     isHide = Column(Boolean, default=False)
 
@@ -69,6 +70,7 @@ class Recipe(Base):
 class ForkedRecipes(Base):
     __tablename__ = 'forked_recipes'
 
+    id = Column(Integer, primary_key=True, index=True)
     userId = Column(Integer, ForeignKey('users.id'), nullable=False)
     recipeId = Column(Integer, ForeignKey('recipes.id'), nullable=False)
     recipeName = Column(String(255), nullable=False)
@@ -79,9 +81,6 @@ class ForkedRecipes(Base):
     createdAt = Column(DateTime, default=datetime.now(), nullable=False)
     updatedAt = Column(DateTime, default=None, onupdate=datetime.now())
 
-    __table_args__ = (
-        PrimaryKeyConstraint('userId', 'recipeId'),
-    )
 
 class Ingredients(Base):
     __tablename__ = 'ingredients'
