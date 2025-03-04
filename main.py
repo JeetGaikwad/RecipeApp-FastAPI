@@ -1,15 +1,11 @@
 from fastapi import FastAPI
 from models import Base
 from database import engine
-from routers import auth, user, recipe, forked_recipe, ingredient, comment, cooking_history
+from routers import auth, user, recipe, forked_recipe, ingredient, comment, cooking_history, wishlist
 
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
-
-@app.get("/")
-def test():
-    return {"messsage": "Hello World!"}
 
 app.include_router(router=auth.router) 
 app.include_router(router=user.router) 
@@ -18,3 +14,4 @@ app.include_router(router=forked_recipe.router)
 app.include_router(router=ingredient.router) 
 app.include_router(router=comment.router) 
 app.include_router(router=cooking_history.router) 
+app.include_router(router=wishlist.router) 
