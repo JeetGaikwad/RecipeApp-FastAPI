@@ -24,7 +24,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('ingredientName', sa.String(length=255), nullable=False),
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
-    sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now()),
+    sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now(), onupdate=sa.func.now()),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_ingredients_id'), 'ingredients', ['id'], unique=False)
@@ -36,7 +36,7 @@ def upgrade() -> None:
     sa.Column('quantity', sa.DECIMAL(precision=10, scale=2), nullable=False),
     sa.Column('unit', sa.Enum('gram', 'kilogram', 'liter', 'mililiter', 'teaspoon', 'tablespoon', 'cup', 'piece', name='weightunit'), nullable=False),
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
-    sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now()),
+    sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now(), onupdate=sa.func.now()),
     sa.ForeignKeyConstraint(['ingredientId'], ['ingredients.id'], ),
     sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ),
     sa.PrimaryKeyConstraint('id')
