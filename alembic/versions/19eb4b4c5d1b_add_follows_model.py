@@ -23,8 +23,8 @@ def upgrade() -> None:
     sa.Column('followerId', sa.Integer(), nullable=False),
     sa.Column('followeeId', sa.Integer(), nullable=False),
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
-    sa.ForeignKeyConstraint(['followeeId'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['followerId'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['followeeId'], ['users.id'], ondelete="CASCADE"),
+    sa.ForeignKeyConstraint(['followerId'], ['users.id'], ondelete="CASCADE"),
     sa.PrimaryKeyConstraint('followerId', 'followeeId')
     )
 

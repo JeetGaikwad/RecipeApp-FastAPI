@@ -27,9 +27,9 @@ def upgrade() -> None:
     sa.Column('parentCommentId', sa.Integer(), nullable=True),
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
     sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now(), onupdate=sa.func.now()),
-    sa.ForeignKeyConstraint(['parentCommentId'], ['recipe_comments.id'], ),
-    sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ),
-    sa.ForeignKeyConstraint(['userId'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['parentCommentId'], ['recipe_comments.id'], ondelete="CASCADE"),
+    sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ondelete="CASCADE"),
+    sa.ForeignKeyConstraint(['userId'], ['users.id'], ondelete="CASCADE"),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_recipe_comments_id'), 'recipe_comments', ['id'], unique=False)

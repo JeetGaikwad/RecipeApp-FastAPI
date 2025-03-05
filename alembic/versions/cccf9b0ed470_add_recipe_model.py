@@ -33,7 +33,7 @@ def upgrade() -> None:
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
     sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now(), onupdate=sa.func.now()),
     sa.Column('deletedAt', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['userId'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['userId'], ['users.id'], ondelete="CASCADE"),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_recipes_id'), 'recipes', ['id'], unique=False)

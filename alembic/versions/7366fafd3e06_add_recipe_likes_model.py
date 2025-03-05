@@ -23,8 +23,8 @@ def upgrade() -> None:
     sa.Column('userId', sa.Integer(), nullable=False),
     sa.Column('recipeId', sa.Integer(), nullable=False),
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
-    sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ),
-    sa.ForeignKeyConstraint(['userId'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ondelete="CASCADE"),
+    sa.ForeignKeyConstraint(['userId'], ['users.id'], ondelete="CASCADE"),
     sa.PrimaryKeyConstraint('userId', 'recipeId')
     )
 

@@ -29,8 +29,8 @@ def upgrade() -> None:
     sa.Column('peopleCount', sa.Integer(), nullable=True, server_default=sa.text('1')),
     sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.func.now()),
     sa.Column('updatedAt', sa.DateTime(), nullable=True, server_default=sa.func.now(), onupdate=sa.func.now()),
-    sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ),
-    sa.ForeignKeyConstraint(['userId'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['recipeId'], ['recipes.id'], ondelete="CASCADE"),
+    sa.ForeignKeyConstraint(['userId'], ['users.id'], ondelete="CASCADE"),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_forked_recipes_id'), 'forked_recipes', ['id'], unique=False)
