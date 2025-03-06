@@ -69,6 +69,9 @@ def authenticate_user(username: str, password: str, db):
 
     if not bcrypt_context.verify(password, user.password):
         return False
+    
+    if user.isBlocked:
+        return False
 
     return user
 
