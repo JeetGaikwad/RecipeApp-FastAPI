@@ -6,12 +6,16 @@ from sqlalchemy.orm import Session
 from starlette import status
 from passlib.context import CryptContext
 from models import Users, Recipe, RecipeComments
+from enum import Enum
 
 router = APIRouter(
     prefix='/admin',
     tags=['admin']
 )
 
+class Role(str, Enum):
+    admin = "admin"
+    user = "user"
 
 def get_db():
     db = SessionLocal()
@@ -29,7 +33,7 @@ bcrypt_context = CryptContext(schemes='bcrypt', deprecated='auto')
 # Recipe management
 @router.get('/recipes', status_code=status.HTTP_200_OK)
 async def get_all_recipes(db: db_dependency, user: user_dependency):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -40,7 +44,7 @@ async def get_all_recipes(db: db_dependency, user: user_dependency):
 
 @router.put("/recipes/{recipe_id}/hide", status_code=status.HTTP_204_NO_CONTENT)
 async def hide_recipe(db: db_dependency, user: user_dependency, recipe_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -56,7 +60,7 @@ async def hide_recipe(db: db_dependency, user: user_dependency, recipe_id: int):
 
 @router.put("/recipes/{recipe_id}/show", status_code=status.HTTP_204_NO_CONTENT)
 async def show_recipe(db: db_dependency, user: user_dependency, recipe_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -72,7 +76,7 @@ async def show_recipe(db: db_dependency, user: user_dependency, recipe_id: int):
 
 @router.delete("/recipes/{recipe_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_recipe(db: db_dependency, user: user_dependency, recipe_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -89,7 +93,7 @@ async def delete_recipe(db: db_dependency, user: user_dependency, recipe_id: int
 # Users management
 @router.get('/users', status_code=status.HTTP_200_OK)
 async def get_all_users(db: db_dependency, user: user_dependency):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -100,7 +104,7 @@ async def get_all_users(db: db_dependency, user: user_dependency):
 
 @router.put("/users/{user_id}/block", status_code=status.HTTP_204_NO_CONTENT)
 async def block_users(db: db_dependency, user: user_dependency, user_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -116,7 +120,7 @@ async def block_users(db: db_dependency, user: user_dependency, user_id: int):
 
 @router.put("/users/{user_id}/unblock", status_code=status.HTTP_204_NO_CONTENT)
 async def unblock_users(db: db_dependency, user: user_dependency, user_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -132,7 +136,7 @@ async def unblock_users(db: db_dependency, user: user_dependency, user_id: int):
 
 @router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_users(db: db_dependency, user: user_dependency, user_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
@@ -149,7 +153,7 @@ async def delete_users(db: db_dependency, user: user_dependency, user_id: int):
 # Comment Deletion
 @router.delete("/comments/{comment_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_comments(db: db_dependency, user: user_dependency, comment_id: int):
-    if user is None or user.get('role') != 'admin':
+    if user is None or user.get('role') != Role.admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized User')
 
