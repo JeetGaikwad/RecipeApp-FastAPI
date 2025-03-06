@@ -1,6 +1,17 @@
 from database import Base
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Enum, DateTime, PrimaryKeyConstraint, Text, DECIMAL
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Boolean,
+    ForeignKey,
+    Enum,
+    DateTime,
+    PrimaryKeyConstraint,
+    Text,
+    DECIMAL,
+)
 import enum
 
 
@@ -10,7 +21,7 @@ class UserRole(enum.Enum):
 
 
 class Users(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(255), unique=True, nullable=False)
@@ -32,27 +43,25 @@ class Users(Base):
 
 
 class Follows(Base):
-    __tablename__ = 'follows'
+    __tablename__ = "follows"
 
-    followerId = Column(Integer, ForeignKey('users.id'), nullable=False)
-    followeeId = Column(Integer, ForeignKey('users.id'), nullable=False)
+    followerId = Column(Integer, ForeignKey("users.id"), nullable=False)
+    followeeId = Column(Integer, ForeignKey("users.id"), nullable=False)
     createdAt = Column(DateTime, default=datetime.now(), nullable=False)
 
-    __table_args__ = (
-        PrimaryKeyConstraint('followerId', 'followeeId'),
-    )
+    __table_args__ = (PrimaryKeyConstraint("followerId", "followeeId"),)
 
 
 class tag(enum.Enum):
-    veg = 'veg'
-    nonveg = 'non-veg'
+    veg = "veg"
+    nonveg = "non-veg"
 
 
 class Recipe(Base):
-    __tablename__ = 'recipes'
+    __tablename__ = "recipes"
 
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     recipeName = Column(String(255), nullable=False)
     description = Column(String(500))
     recipeType = Column(Enum(tag), nullable=False)
@@ -68,11 +77,11 @@ class Recipe(Base):
 
 
 class ForkedRecipes(Base):
-    __tablename__ = 'forked_recipes'
+    __tablename__ = "forked_recipes"
 
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
-    recipeId = Column(Integer, ForeignKey('recipes.id'), nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
+    recipeId = Column(Integer, ForeignKey("recipes.id"), nullable=False)
     recipeName = Column(String(255), nullable=False)
     description = Column(String(500))
     recipeType = Column(Enum(tag), nullable=False)
@@ -83,7 +92,7 @@ class ForkedRecipes(Base):
 
 
 class Ingredients(Base):
-    __tablename__ = 'ingredients'
+    __tablename__ = "ingredients"
 
     id = Column(Integer, primary_key=True, index=True)
     ingredientName = Column(String(255), nullable=False)
@@ -104,11 +113,11 @@ class WeightUnit(enum.Enum):
 
 
 class RecipeIngredients(Base):
-    __tablename__ = 'recipe_ingredients'
+    __tablename__ = "recipe_ingredients"
 
     id = Column(Integer, primary_key=True, index=True)
-    ingredientId = Column(Integer, ForeignKey('ingredients.id'), nullable=False)
-    recipeId = Column(Integer, ForeignKey('recipes.id'), nullable=False)
+    ingredientId = Column(Integer, ForeignKey("ingredients.id"), nullable=False)
+    recipeId = Column(Integer, ForeignKey("recipes.id"), nullable=False)
     quantity = Column(DECIMAL(10, 2), nullable=False)
     unit = Column(Enum(WeightUnit), nullable=False)
 
@@ -117,57 +126,55 @@ class RecipeIngredients(Base):
 
 
 class RecipeComments(Base):
-    __tablename__ = 'recipe_comments'
+    __tablename__ = "recipe_comments"
 
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     comment = Column(Text, nullable=False)
-    recipeId = Column(Integer, ForeignKey('recipes.id'), nullable=False)
-    parentCommentId = Column(Integer, ForeignKey('recipe_comments.id'))
+    recipeId = Column(Integer, ForeignKey("recipes.id"), nullable=False)
+    parentCommentId = Column(Integer, ForeignKey("recipe_comments.id"))
 
     createdAt = Column(DateTime, default=datetime.now(), nullable=False)
     updatedAt = Column(DateTime, default=None, onupdate=datetime.now())
 
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {"extend_existing": True}
+
 
 class RecipeLikes(Base):
-    __tablename__ = 'recipe_likes'
+    __tablename__ = "recipe_likes"
 
-    userId = Column(Integer, ForeignKey('users.id'))
-    recipeId = Column(Integer, ForeignKey('recipes.id'))
+    userId = Column(Integer, ForeignKey("users.id"))
+    recipeId = Column(Integer, ForeignKey("recipes.id"))
 
     createdAt = Column(DateTime, default=datetime.now(), nullable=False)
 
-    __table_args__ = (
-        PrimaryKeyConstraint('userId', 'recipeId'),
-    )
+    __table_args__ = (PrimaryKeyConstraint("userId", "recipeId"),)
 
 
 class CookingHistory(Base):
-    __tablename__ = 'cooking_historys'
+    __tablename__ = "cooking_historys"
 
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
-    recipeId = Column(Integer, ForeignKey('recipes.id'), nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
+    recipeId = Column(Integer, ForeignKey("recipes.id"), nullable=False)
 
     createdAt = Column(DateTime, default=datetime.now(), nullable=False)
     updatedAt = Column(DateTime, default=None, onupdate=datetime.now())
-    
-    __table_args__ = (
-        {'extend_existing': True},
-    )
+
+    __table_args__ = ({"extend_existing": True},)
+
 
 class VisiblityEnum(enum.Enum):
-    public = 'public'
-    private = 'private'
+    public = "public"
+    private = "private"
 
 
 class Wishlists(Base):
-    __tablename__ = 'wishlists'
+    __tablename__ = "wishlists"
 
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
-    recipeId = Column(Integer, ForeignKey('recipes.id'), nullable=False)
+    userId = Column(Integer, ForeignKey("users.id"), nullable=False)
+    recipeId = Column(Integer, ForeignKey("recipes.id"), nullable=False)
 
     visibility = Column(Enum(VisiblityEnum), default=VisiblityEnum.private)
 
